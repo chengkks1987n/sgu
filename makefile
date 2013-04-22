@@ -1,8 +1,13 @@
-CC = gcc
+SRC = 142.c
 
-compile:	sgu.c
-	${CC} -c -g sgu.c
-	${CC} -o sgu sgu.o
+CC = gcc
+FLAG = -g -Wall
+TARGET = sgu
+
+all:	
+	${CC} $(FLAG) -o $(TARGET) $(SRC)
 
 clean:	
-	rm -f *.o *~ sgu
+	rm -f *.o *~ sgu *#
+
+
