@@ -1,4 +1,5 @@
 
+
 #include <stdio.h>
 #include <string.h>
 
@@ -10,7 +11,6 @@ int next(char* str) {
   while (str[i] != '\0') {
     if (str[i] == 'a') {
       str[i] = 'b';
-
       return 1;
     }
     else {
@@ -38,7 +38,7 @@ int contain(int len) {
   
   do {
     char *p = strstr(s, ans);
-    if (p == 0) {
+    if (p == NULL) {
       return 0;
     }
   } while (next(ans));
@@ -48,12 +48,18 @@ int contain(int len) {
 
 
 int main() {
+  #ifndef ONLINE_JUDGE
+  freopen("in.txt", "r", stdin);
+  #endif
+
   int n;
   scanf("%d%s",&n, s);
+
   int low = 0;
   int up = LOG2(n) + 1;
+  int mid;
   while (up - low > 1) {
-    int mid = (up + low) / 2;
+    mid = (up + low) / 2;
     if (contain(mid)) {
       low = mid;
     }
@@ -61,7 +67,7 @@ int main() {
       up = mid;
     }
   }
-  if (up == LOG2(n) + 1) {
+  if (up != mid) {
     contain(up);
   }
   
