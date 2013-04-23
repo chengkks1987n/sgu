@@ -1,6 +1,6 @@
-SRC = 142.c
-CASE = 142case.c
-SAMPLE = 142sample.c
+SRC = 142.c			#sorce file
+CASE = 142case.c		#test case create file
+SAMPLE = 142sample.c		#sample file, the result must be right.
 
 CC = gcc
 FLAG = -g -Wall
@@ -8,21 +8,19 @@ FLAG = -g -Wall
 all:	sgu
 
 cleanall: clean		
-	rm -f sgu in.txt case sample
+	rm -f sgu in.txt case sample sgu.txt sample.txt
 
 clean:
 	rm -f *.o *~ *# 
 
-test: sgu case sample
-	./case
-	./sgu
-	./sample
+test: sgu case sample test.sh
+	./test.sh
 
 case: $(CASE)
-	gcc -o case 142case.c
+	gcc -o case $(CASE)
 
 sample : $(SAMPLE)
-	gcc -o sample 142sample.c
+	gcc -o sample $(SAMPLE)
 
 sgu : $(SRC)
 	${CC} $(FLAG) -o sgu $(SRC)
