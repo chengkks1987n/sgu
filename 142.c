@@ -6,6 +6,7 @@
 char s[500002] = "";
 char ans[22] = "";
 
+/*
 int next(char* str) {
   int i = 0;
   while (str[i] != '\0') {
@@ -20,6 +21,17 @@ int next(char* str) {
   }
   return 0;
 }
+*/
+
+//convert int v to binary string in length len
+void int2str(int v, int len, char *str) {
+  int i = 0;
+  for (; i<len; ++i) {
+    str[i] = 'a' + (v & 1);
+    v >>= 1;
+  }
+  str[i] = '\0';
+}
 
 int LOG2(int m) {
   int t[] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 
@@ -31,17 +43,13 @@ int LOG2(int m) {
 
 int contain(int len) {
   int i = 0;
-  for ( ; i<len; ++i) {
-    ans[i] = 'a';
-  }
-  ans[i] = '\0';
-  
-  do {
-    char *p = strstr(s, ans);
-    if (p == NULL) {
+  int b = (1 << len);
+  for ( ; i<b; ++i) {
+    int2str(i, len, ans);
+    if (strstr(s, ans) == NULL) {
       return 0;
     }
-  } while (next(ans));
+  }
 
   return 1;
 }
