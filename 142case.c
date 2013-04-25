@@ -9,7 +9,7 @@ int main () {
   int n;
   int i = 0;
   srand (time(NULL));
-  n = rand() % 100 + 1;
+  n = rand() % 500000 + 1;
   printf("%d\n", n);
   for (; i< n; ++i) {
     putchar('a' + rand() % 2);

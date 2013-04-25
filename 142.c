@@ -37,6 +37,7 @@ void int2str(int v, int len, char *str) {
   str[i] = '\0';
 }
 
+/*
 int LOG2(int m) {
   int t[] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 
 	     8192, 16384, 32768, 65536, 131072, 262144, 524288 };
@@ -44,6 +45,7 @@ int LOG2(int m) {
   while (t[r] < m) ++r;
   return r;
 }
+*/
 
 int contain(int len) {
   int i = 0;
@@ -66,7 +68,7 @@ int main() {
   scanf("%d%s",&n, s);
 
   int low = 0;
-  int up = LOG2(n) + 1;
+  int up = 19;
   int mid;
   initMark(up);
   while (up - low > 1) {
@@ -78,7 +80,7 @@ int main() {
       up = mid;
     }
   }
-  if (up == LOG2(n)+1) {
+  if (up == 19) {
     contain(up);
   }
   
