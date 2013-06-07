@@ -73,7 +73,7 @@ int is_ok(int v, vector<int> s)
     return -1;
   }
   else {
-    if (s.size() == n -1) {
+    if (s.size() == n - 1) {
       return 0;
     }
     return 1;
@@ -84,36 +84,40 @@ int is_ok(int v, vector<int> s)
 description:
  - find answer use dfs.
  ************************/
-void dfs(int v, vector<int> s)
+void dfs()
 {
-  if (v <= 0) {
-    if (s.size() < 2){
-      cout << "No solution" << endl;
-      return;
-    }
-    else {
-      int e = s.back();
-      s.pop_back();
-      int a = s.back();
-      dfs (next(a, e), s);
-    }
-  }
-  else {
-    int r = is_ok(v, s);
-    if (r > 0) {
-      s.push_back(v);
-      dfs(g[v][0], s);
-    }
-    else if (r == 0) {
-      int i;
-      for (i=0; i<s.size(); ++i) {
-	cout << s[i] << " ";
+  int v = 1;
+  vector<int> &s = g[0];
+  while(true) {
+    if (v <= 0) {
+      if (s.size() < 2){
+	cout << "No solution" << endl;
+	return;
       }
-      cout << v << " " << 1 << endl;
-      return;
+      else {
+	int e = s.back();
+	s.pop_back();
+	int a = s.back();
+	v = next(a, e);
+      }
     }
     else {
-      dfs(next(s.back(), v), s);
+      int r = is_ok(v, s);
+      if (r > 0) {
+	s.push_back(v);
+	v = g[v][0];
+      }
+      else if (r == 0) {
+	int i;
+	for (i=0; i<s.size(); ++i) {
+	  cout << s[i] << " ";
+	}
+	cout << v << " " << 1 << endl;
+	return;
+      }
+      else {
+	v = next(s.back(), v);
+      }
     }
   }
 }
@@ -121,7 +125,7 @@ void dfs(int v, vector<int> s)
 int main() 
 {
   read();
-  dfs(1, g[0]);
+  dfs();
   return 0;
 }
 
