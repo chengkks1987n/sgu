@@ -9,7 +9,7 @@ using namespace std;
 const int SIZE = 1002;
 int n;
 vector<int> g[SIZE];  //the graph, representation by adjacency list
-
+bool visited[SIZE] = {false};
 /*************************
 description:
  - read input
@@ -65,7 +65,7 @@ output:
  - if v is in st, return -1;
  - if v is not in st, return 1;
 ***************************************/
-int is_ok(int v, vector<int> s)
+/*int is_ok(int v, vector<int> s)
 {
   vector<int>::iterator it;
   it = find(s.begin(), s.end(), v);
@@ -78,7 +78,7 @@ int is_ok(int v, vector<int> s)
     }
     return 1;
   }
-}
+  }*/
 
 /***************************
 description:
@@ -97,17 +97,16 @@ void dfs()
       else {
 	int e = s.back();
 	s.pop_back();
+	visited[e] = false;
 	int a = s.back();
 	v = next(a, e);
       }
     }
     else {
-      int r = is_ok(v, s);
-      if (r > 0) {
-	s.push_back(v);
-	v = g[v][0];
+      if (visited[v]) {
+	v = next(s.back(), v);
       }
-      else if (r == 0) {
+      else if (s.size() == n - 1) {
 	int i;
 	for (i=0; i<s.size(); ++i) {
 	  cout << s[i] << " ";
@@ -116,7 +115,9 @@ void dfs()
 	return;
       }
       else {
-	v = next(s.back(), v);
+	s.push_back(v);
+	visited[v] = true;
+	v = g[v][0];
       }
     }
   }
