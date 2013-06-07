@@ -10,6 +10,8 @@ const int SIZE = 1002;
 int n;
 vector<int> g[SIZE];  //the graph, representation by adjacency list
 bool visited[SIZE] = {false};
+int index[SIZE] = { 0 }; //index[a] means the next child node of a, that will be visited.
+
 /*************************
 description:
  - read input
@@ -41,9 +43,9 @@ output:
  - if b is the last child of a, return -1;
  - else return a's child node after b
 *****************/
-int next(int a, int b)
+int next(int a)
 {
-  vector<int>::iterator it;
+  /*  vector<int>::iterator it;
   it = find(g[a].begin(), g[a].end(), b);
   ++it;
   if (it == g[a].end()) {
@@ -51,7 +53,14 @@ int next(int a, int b)
   }
   else {
     return *it;
+    }*/
+  int ans = -1;
+  if (index[a] < g[a].size()) {
+    ans = g[a][index[a]];
+    ++index[a] ;
   }
+  
+  return ans;
 }
 
 /****************************************
@@ -98,13 +107,14 @@ void dfs()
 	int e = s.back();
 	s.pop_back();
 	visited[e] = false;
+	index[e] = 0;
 	int a = s.back();
-	v = next(a, e);
+	v = next(a);
       }
     }
     else {
       if (visited[v]) {
-	v = next(s.back(), v);
+	v = next(s.back());
       }
       else if (s.size() == n - 1) {
 	int i;
@@ -117,7 +127,7 @@ void dfs()
       else {
 	s.push_back(v);
 	visited[v] = true;
-	v = g[v][0];
+	v = next(v);
       }
     }
   }
@@ -144,5 +154,4 @@ int main()
 1 5
 1 5
 2 3 4
-
  */
