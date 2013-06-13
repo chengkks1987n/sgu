@@ -55,6 +55,7 @@ void find_one_path(vector<int> &p)
 {
   p.clear();
   int node, i;
+  //forword
   for (node=1; !visited[node];){
     p.push_back(node);
     visited[node] = true;
@@ -65,6 +66,24 @@ void find_one_path(vector<int> &p)
       }
     }
   }
+  //back
+  for (i=0; i<g[1].size(); ++i) {
+    if (!(visited[g[1][i]])) {
+	node = g[1][i];
+	break;
+    }
+  }
+  for (; !visited[node]; ) {
+    p.insert(p.begin(), node);
+    visited[node] = true;
+    for (i=0; i<g[node].size(); ++i) {
+      if (!(visited[g[node][i]])) {
+	node = g[node][i];
+	break;
+      }
+    }    
+  }
+    
 }
 
 void output(vector<int> &p) 
@@ -82,7 +101,7 @@ void output(vector<int> &p)
 
 void find_node_outside_path(vector<int> &p, int &z, int &k)
 {
-  int i;
+  int i; 
   for (k=0; k<p.size(); ++k) {
     for (i=0; i<g[p[k]].size(); ++i) {
       if (!visited[g[p[k]][i]]) {
