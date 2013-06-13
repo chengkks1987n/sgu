@@ -1,7 +1,10 @@
 #sorce file
-SRC = sgu.cpp
-#on windows os,it is different
-DIR = ~/tmp
+SRC = sgu2.cpp
+#on linux
+#DIR = ~/tmp
+#on windows
+DIR = ./tmp
+
 
 CC = g++
 FLAG = -g -Wall
