@@ -101,16 +101,31 @@ void output(vector<int> &p)
 
 void find_node_outside_path(vector<int> &p, int &z, int &k)
 {
-  int i; 
-  for (k=0; k<p.size(); ++k) {
-    for (i=0; i<g[p[k]].size(); ++i) {
-      if (!visited[g[p[k]][i]]) {
-	z = g[p[k]][i];
-	visited[z] = true;
-	return;
+  int i, j; 
+  bool found = false;
+  for (i=1; i<=n && !found; ++i) {
+    if (!visited[i]) {
+      for (j=0; j<g[i].size() && !found; ++j) {
+	if (visited[g[i][j]]) {
+	  z = i;
+	  found = true;
+	  break;
+	}
       }
     }
   }
+  for (k=0; g[z][j]!=p[k]; ++k) ;
+  visited[z] = true;
+
+  // for (k=0; k<p.size(); ++k) {
+  //   for (i=0; i<g[p[k]].size(); ++i) {
+  //     if (!visited[g[p[k]][i]]) {
+  // 	z = g[p[k]][i];
+  // 	visited[z] = true;
+  // 	return;
+  //     }
+  //   }
+  // }
 }
 
 void extend_path(vector<int> &p, int z, int k)
