@@ -11,6 +11,7 @@ const int SIZE = 1002;
 int n;
 vector<int> g[SIZE];  //graph representation by adjacency list
 bool visited[SIZE] = { false };  
+int next[SIZE], start, tail, len;
 
 /*************************
 description:
@@ -51,110 +52,141 @@ bool is_adj(int a, int b)
   return false;
 }
 
-void find_one_path(vector<int> &p) 
+void find_one_path() 
 {
-  p.clear();
-  int node, i;
+  start = tail = 1;
+  int v ;
+  int i;
+  bool over = false;
   //forword
-  for (node=1; !visited[node];){
-    p.push_back(node);
-    visited[node] = true;
-    for (i=0; i<g[node].size(); ++i) {
-      if (!visited[g[node][i]]) {
-	node = g[node][i];
+  v = 1;
+  visited[1] = true;
+  len = 1;
+  while (!over) {
+    over = true;
+    for (i=0; i<g[v].size(); ++i) {
+      if (!visited[g[v][i]]) {
+	tail = g[v][i];
+	next[v] = tail;
+	visited[tail] = true;
+	++len;
+	v = tail;
+	over = false;
 	break;
       }
     }
   }
+
   //back
-  for (i=0; i<g[1].size(); ++i) {
-    if (!(visited[g[1][i]])) {
-	node = g[1][i];
-	break;
-    }
-  }
-  for (; !visited[node]; ) {
-    p.insert(p.begin(), node);
-    visited[node] = true;
-    for (i=0; i<g[node].size(); ++i) {
-      if (!(visited[g[node][i]])) {
-	node = g[node][i];
+  v = 1;
+  over = false;
+  while (!over) {
+    over = true;
+    for (i=0; i<g[v].size(); ++i) {
+      if (!visited[g[v][i]]) {
+	start = g[v][i];
+	next[start] = v;
+	visited[start] = true;
+	++len;
+	v = start;
+	over = false;
 	break;
       }
-    }    
+    }
   }
-    
 }
 
-void output(vector<int> &p) 
+void output() 
 {
-  vector<int>::iterator start, it;
-  start = find(p.begin(), p.end(), 1);
-  for (it=start; it!=p.end(); ++it) {
-    cout << *it << " ";
+  int v ;
+  for (v=1; v!=tail; v=next[v]) {
+    cout << v << " ";
   }
-  for (it=p.begin(); it!=start; ++it) {
-    cout << *it << " ";
+  cout << tail << " ";
+  for (v=start; v!=1; v=next[v]) {
+    cout << v << " ";
   }
   cout << 1 << endl;
 }
 
-void find_node_outside_path(vector<int> &p, int &z, int &k)
+void find_node_outside_path(int &z, int &k)
 {
-  int i; 
-  for (k=0; k<p.size(); ++k) {
-    for (i=0; i<g[p[k]].size(); ++i) {
-      if (!visited[g[p[k]][i]]) {
-	z = g[p[k]][i];
-	visited[z] = true;
-	return;
+  int i, j;
+  for (i=1; i<=n; ++i) {
+    if (!visited[i]) {
+      for (j=0; j<g[i].size(); ++j) {
+	if (visited[g[i][j]]) {
+	  z = i;
+	  k = g[i][j];
+	  return;
+	} 
       }
     }
   }
 }
 
-void extend_path(vector<int> &p, int z, int k)
+void extend_path(int z, int k)
 {
-  reverse(p.begin(), p.begin()+k);
-  reverse(p.begin()+k, p.end());
-  p.push_back(z);
+  next[tail] = start;
+  next[z] = k;
+  visited[z] = true;
+  ++len;
+  start = z;
+  tail = start;
+  while (next[tail] != k) tail = next[tail];
 }
 
-void find_loop_node(vector<int> &p, int& k) 
+void find_loop_node(int& k) 
 {
-  for (k=1; k<p.size()-1; ++k) {
-    if (is_adj(p.front(), p[k]) && is_adj(p[k-1], p.back())) {
+  k = next[start];
+  while (k != tail) {
+    if (is_adj(k, tail) && is_adj(next[k], start)) {
       return;
     }
   }
 }
 
-void path2loop(vector<int>& p, int k) 
+void path2loop(int k) 
 {
-  reverse(p.begin()+k, p.end());    
+  int v = next[k];
+  int pre[SIZE], sp, tp;
+  sp = tail;
+  tp = v;
+  while (next[v] != tail) {
+    pre[next[v]] = v;
+    v = next[v];
+  }
+  pre[tail] = v;
+
+  next[k] = sp;
+  tail = tp;
+  v = sp;
+  while (v != tp) {
+    next[v] = pre[v];
+    v = pre[v];
+  }
 }
 
 void solve() 
 {
-  vector<int> &path = g[0];
-  find_one_path(path);
+  find_one_path();
   
   while (true) {
-    if (is_adj(path.front(), path.back())) {
-      if (path.size() == n) {
-	output(path);
+    if (is_adj(start, tail)) {
+      if (len == n) {
+	output();
 	return;
       }
       else {
 	int z, k;
-	find_node_outside_path(path, z, k);
-	extend_path(path, z, k);
+	find_node_outside_path( z, k);
+	extend_path(z, k);
       }
     }
     else {
       int k;
-      find_loop_node(path, k);
-      path2loop(path, k);
+      find_loop_node( k);
+      path2loop( k);
     }
   }
 }
