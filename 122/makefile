@@ -1,12 +1,12 @@
 #sorce file
-SRC = sgu2.cpp
+SRC = sgu.c
 #on linux
 #DIR = ~/tmp
 #on windows
 DIR = ./tmp
 
 
-CC = g++
+CC = gcc
 FLAG = -g -Wall
 
 all:	sgu
