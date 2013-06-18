@@ -10,15 +10,6 @@ int i, j, a;
 int tmp[SIZE], c;
 char flag;
 
-int find_visited_child(int v) {
-  int i = start;
-  while (i != tail) {
-    if (adj[v][i]) return i;
-  }
-  if (adj[v][tail]) return tail;
-  return 0;
-}
-
 void find_one_path() 
 {
   //forword
@@ -67,7 +58,7 @@ int main()
   }
   
   // solve 
-  len = start = tail =  visited[1] = 1;
+  len = start = tail = visited[1] = 1;
   // find a path
   find_one_path();
   
@@ -87,20 +78,26 @@ int main()
       else {
 	//extend path
 	for (i=1; i<=n ; ++i) {
+	  flag = 0;
 	  if (!visited[i]) {
-	    j = find_visited_child(i);
-	    if (j != 0) {
-	      break;
+	    for (j=start; j!=tail; j=next[j]) {
+	      if (adj[i][j]) {
+		flag = 1;
+		break;		
+	      }
 	    }
 	  }
+	  if (flag) {
+	    break;
+	  }
 	}
+	
 	start = next[j];
 	tail = i;
 	next[j] = i;
 	visited[i] = 1;
 	++len;
 	find_one_path();
-
       }
     }
     else {
