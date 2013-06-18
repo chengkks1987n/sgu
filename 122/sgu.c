@@ -4,7 +4,7 @@
 
 char adj[SIZE][SIZE] = {{0}};
 char visited[SIZE] = { 0 };  
-int n, pre[SIZE], next[SIZE], start, tail, len;
+int n,  next[SIZE], start, tail, len;
 
 void read()
 {
@@ -43,23 +43,19 @@ int find_visited_child(int v) {
 
 void find_one_path() 
 {
-  len = start = tail =  visited[1] = 1;
-
   //forword
-  int u, v = 1;
+  int u, v = tail;
   while ((u=find_unvisited_child(v)) != 0) {
     next[v] = u;
-    pre[u] = v;
     ++len;
     visited[u] = 1;
     v = u;
     tail = u;
   }
   //back
-  v = 1;
+  v = start;
   while((u=find_unvisited_child(v)) != 0) {
     next[u] = v;
-    pre[v] = u;
     ++len;
     visited[u] = 1;
     v = u;
@@ -88,14 +84,12 @@ void extend_path()
       }
     }
   }
-
-  start = i;
-  tail = pre[j];
-  next[i] = j;
-  pre[j] = i;
-  next[tail] = 0;
+  start = next[j];
+  tail = i;
+  next[j] = i;
   visited[i] = 1;
   ++len;
+  find_one_path();
 }
 
 void path2loop() 
@@ -111,26 +105,32 @@ void path2loop()
       j = next[i];
     }
   }
-
-  while (tail != j) {
-    int tmp = pre[tail];
-    next[i] = tail;
-    pre[tail] = i;
-    i = tail;
-    tail = tmp;
-  }
+  
+  int tmp[SIZE];
+  int p = j;
+  int c = 0;
+  do {
+    tmp[c] = p;
+    ++c;
+    p = next[p];
+  }while (p != tail);
   next[i] = tail;
-  pre[tail] = i;
+  i = tail;
+  for (--c; c>=0; --c) {
+    next[i] = tmp[c];
+    i = tmp[c];
+  }
+  tail = i;
 }
 
 void solve() 
 {
+  len = start = tail =  visited[1] = 1;
   find_one_path();
   
   while (1) {
     if (adj[start][tail]) {
       next[tail] = start;
-      pre[start] = tail;
       if (len == n) {
 	output();
 	return;
