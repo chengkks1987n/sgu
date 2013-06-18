@@ -90,15 +90,22 @@ void output()
 
 void extend_path()
 {
-  int i, j;
-  for (i=1; i<=n ; ++i) {
+  int i, j; 
+  bool found = false;
+  for (i=1; i<=n && !found; ++i) {
     if (!visited[i]) {
-      j = find_visited_child(i);
-      if (j != 0) {
-	break;
+      for (j=0; j<g[i].size() && !found; ++j) {
+	if (visited[g[i][j]]) {
+	  z = i;
+	  found = true;
+	  break;
+	}
       }
     }
   }
+  for (k=0; g[z][j]!=p[k]; ++k) ;
+  visited[z] = true;
+
 
   start = i;
   tail = pre[j];
