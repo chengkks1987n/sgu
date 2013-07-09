@@ -22,16 +22,25 @@
 #define SZ 200001
 
 int m;
-int n;
-int p[2][2*SZ] ;
-int t[2*SZ];
-int len = 0;
+int n; //!< current wall NO. 
+int p[2][2*SZ] ; //!< all of the end points of walls.
+int t[2*SZ]; //!< the sortted index of p
+int len = 0; //!< length of p, t, s
 
-int s[2*SZ] = { 0 };
-int c = 0;
+int s[2*SZ] = { 0 }; //!< set the i-th point belongs to
+int c = 0; //!< the total sets count.
 
 int x1, z1, x2, y2;
 
+/**
+   @brief compare point(a,b) and point(x,y)
+
+   @param a 
+   @param b 
+   @param x 
+   @param y 
+   @return if equal, return 0; big 1; else -1;
+   */
 int compare(int a, int b, int x, int y)
 {
   if (a == x) {
@@ -40,7 +49,17 @@ int compare(int a, int b, int x, int y)
   return a - x;
 }
 
+
+/**
+   @brief insert point(x,y) to p in positon psn.
+   make sure t is sorted.
+   
+   @param x 
+   @param y 
+   @param psn 
+   */
 void insert (int x, int y, int psn) {
+
   p[0][len] = x;
   p[1][len] = y;
   int i = len;
@@ -52,37 +71,48 @@ void insert (int x, int y, int psn) {
   ++len;
 }
 
-int bs(int low, int up, int x, int y, int* psn) 
+
+/**
+   @brief binary search point(x,y)
+
+   @param low 
+   @param up 
+   @param x 
+   @param y
+   @return if cannot find ,insert the point and return -1; 
+   else return the set of the point.
+   */
+int bs(int low, int up, int x, int y) 
 {
-  *psn = low;
-  int r1 = compare(p[0][t[low]], p[1][t[low]], x, y);
-  int r2 = compare(p[0][t[up]], p[1][t[up]], x, y);
-  if (r1>0) {
-    *psn = low;
-    return 0;
+  if (low > up) {
+    insert(x, y, low);
+    return -1;
   }
-  if (r2<0) {
-    *psn = up + 1;
-    return 0;
+  if (low == up) {
+      int r = compare(p[0][t[low]], p[1][t[low]], x, y);
+      if (r == 0) {
+	return s[low];
+      }
+      else if (r > 0) {
+	insert(x, y, low);
+	return -1;
+      }
+      else {
+	insert(x, y, low+1);
+	return -1;
+      }
   }
-  while (low <= up) {
-    if (up - low == 1) {
-      *psn = up;
-    }
-    r1 = (up + low) / 2;
-    r2 = compare(p[0][t[r1]], p[1][t[r1]], x, y);
-    if (!r2) {
-      return s[r1];
-    }
-    if (r2 > 0) {
-      up = r1 - 1;
-    }
-    else {
-      low = r1 + 1;
-    }    
+  int mid = (up + low) / 2;
+  int r = compare(p[0][t[mid]], p[1][t[mid]], x, y);
+  if (r == 0) {
+    return s[mid];    
   }
-  
-  return 0;
+  else if (r > 0) {
+    return bs(low, mid-1, x, y);
+  }
+  else {
+    return bs(mid+1, up, x, y);
+  }
 }
 
 int main ()
@@ -90,14 +120,11 @@ int main ()
   scanf("%d", &m);
   for (n=1; n<=m; ++n) {
     scanf("%d%d%d%d", &x1, &z1, &x2, &y2);
-    int p1, p2;
-    int u = bs(0, len-1, x1, z1, &p1);
-    if (!u) { insert(x1, z1, p1); }
-    int v = bs(0, len-1, x2, y2, &p2);
-    if (!v) { insert(x2, y2, p2); }
+    int u = bs(0, len-1, x1, z1);
+    int v = bs(0, len-1, x2, y2);
 
     if (u == v) {
-      if (u != 0) {
+      if (u != -1) {
 	printf("%d\n", n);
 	return 0;
       }
@@ -108,10 +135,10 @@ int main ()
       }
     }
     else {
-      if (u == 0) {
+      if (u == -1) {
 	s[len-1] = v;
       }
-      else if (v == 0) {
+      else if (v == -1) {
 	s[len-1] = u;
       }
       else {
