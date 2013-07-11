@@ -7,10 +7,7 @@ FLAG = -g -Wall
 all:	sgu
 
 clean:
-	rm -f *.o *~ *# 
+	rm -f *.o *~ *# #* .* sgu
 
 sgu : $(SRC)
 	${CC} $(FLAG) -o sgu $(SRC)
-
-run: sgu
-	./sgu
