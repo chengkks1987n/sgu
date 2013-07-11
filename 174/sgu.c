@@ -28,7 +28,6 @@ int len = 0; //!< length of p, s
 
 int s[2*SZ] = { 0 }; //!< which set the i-th point belongs to
 int c = 0; //!< the total sets count.
-
 int x1, z1, x2, y2;
 
 /**
@@ -47,6 +46,7 @@ int find(int x, int y)
       return s[i];
     }
   }
+
   p[0][len] = x;
   p[1][len] = y;
   ++len;

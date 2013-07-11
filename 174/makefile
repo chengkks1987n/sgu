@@ -1,7 +1,7 @@
 #sorce file
-SRC = sgu.c
+SRC = sgu.cpp
 
-CC = gcc
+CC = g++
 FLAG = -g -Wall
 
 all:	sgu
