@@ -29,8 +29,8 @@ int main()
     pair<map<pair<int,int>,int>::iterator,bool> r1, r2;
     r1 = p.insert(p1);
     r2 = p.insert(p2);
-    if (r1.second) {  // p1 is in a set
-      if (r2.second) { // p2 is in a set
+    if (!r1.second) {  // p1 is in a set
+      if (!r2.second) { // p2 is in a set
 	if(r1.first->second == r2.first->second) {// p1, p2 are in the same set
 	  cout << n << endl;
 	  return 0;
@@ -52,7 +52,7 @@ int main()
       }
     }
     else { // p1 is not in a set
-      if (r2.second) { // p2 is in a set
+      if (!r2.second) { // p2 is in a set
 	r1.first->second = r2.first->second;
       }
       else { // p1 and p2 are not in any sets
