@@ -7,62 +7,78 @@
 
    @section Description
 
+   the complexity is N*lgN.
+
+   use map to store the end points of walls, key is the point,
+   value is a index;
+   user array to represent the sets, s[i] = j(i != j) mean that the
+   i-th point  and j-th point are in the same set, s[i] = i mean that
+   the i-th point is in set i.
+   the Complexity of union two sets on time is constant,so as to find.
+
+   key point: a effective representaton of sets, the elements in same set
+   are link to the set id, the length is 2 or 3 at most.
+
+   use printf/scanf rather than cin/cout.
+
+   ref: http://hi.baidu.com/zyz913614263/item/991b9cb288985257ba0e1215
    */
 
-#include <iostream>
+#include <cstdio>
 #include <map>
 using namespace std;
 
+const int SIZE = 200001;
+
 int m;
-int n;
 map<pair<int,int>, int> p;
-int setNO = 0;
+pair<map<pair<int,int>,int>::iterator,bool> r1, r2;
+int s[SIZE<<1];
+int a, b, c, d, i;
+
+/**
+   @brief find which set the a-th point belong to
+   complexity is constant
+   during the find process, you the short the link path to 2.
+
+   @param a 
+   @return 
+   */
+int find(int a) {
+  if (s[a] == a) {
+    return a;
+  }
+  return (s[a] = find(s[a]));
+}
 
 int main()
 {
-  cin >> m;
-  for (n=1; n<=m; ++n) {
-    pair<pair<int,int>,int> p1, p2;
-    cin >> p1.first.first >> p1.first.second ;
-    cin >> p2.first.first >> p2.first.second;
-    //    p1.second = p2.second = 0;
-    pair<map<pair<int,int>,int>::iterator,bool> r1, r2;
-    r1 = p.insert(p1);
-    r2 = p.insert(p2);
-    if (!r1.second) {  // p1 is in a set
-      if (!r2.second) { // p2 is in a set
-	if(r1.first->second == r2.first->second) {// p1, p2 are in the same set
-	  cout << n << endl;
-	  return 0;
-	}
-	else { // p1, p2 are in different sets
-	  int s1 = r1.first->second;
-	  int s2 = r2.first->second;
-	  map<pair<int,int>, int>::iterator it = p.begin();
-	  while (it != p.end()) {
-	    if (it->second == s1) {
-	      it->second = s2;
-	    }
-	    ++it;
-	  }	    
-	}	
-      }
-      else { // p1 is in a set, p2 is not in a set
-	r2.first->second = r1.first->second;
-      }
+  scanf("%d", &m);
+  for (i=0; i<(m<<1); ++i) {
+    s[i] = i;
+  }
+  for (i=1; i<=m; ++i) {
+    scanf("%d%d%d%d", &a, &b, &c, &d);
+    r1 = p.insert(make_pair(make_pair(a,b),-1));
+    if (r1.second) { // p1 is not in any sets
+      r1.first->second = p.size() - 1;
     }
-    else { // p1 is not in a set
-      if (!r2.second) { // p2 is in a set
-	r1.first->second = r2.first->second;
-      }
-      else { // p1 and p2 are not in any sets
-	++setNO;
-	r1.first->second = setNO;
-	r2.first->second = setNO;
-      }
+    a = find(r1.first->second);
+    r2 = p.insert(make_pair(make_pair(c,d),-1));
+    if (r2.second) { // p2 is not in any sets
+      r2.first->second = p.size() - 1;
+    }
+    b = find(r2.first->second);
+
+    if (a == b) {
+      printf("%d\n", i);
+      return 0;
+    }
+    else {
+      s[a] = b;
     }
   }
 
-  cout << 0 << endl;
+  puts("0");
   return 0;
 }
