@@ -38,7 +38,7 @@ int between(int x, int y) {
   double vxy = abs(v[x] - v[y]);
   double t1 = len / vxy;
   int ans = 0;
-  if (t > t1) {
+  if (t >= t1) {
     ++ans;
     t1 = t - t1;
   }
