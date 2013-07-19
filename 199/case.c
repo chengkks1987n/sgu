@@ -20,7 +20,7 @@ int main () {
   n = rand() % 7 + 2;
   printf("%d\n", n);
   for (i=0; i< n; ++i) {
-    printf("%d %d\n", rand()%99999 + 1, rand()%99999 + 1);
+    printf("%d %d\n", rand()%99 + 1, rand()%99 + 1);
   }
   putchar('\n');
   return 0;

@@ -78,7 +78,7 @@ int main()
   
   printf("%d\n", max_value);
   for (i=max_idx; i!=-1; i=next[i]) {
-    printf("%d ", i);
+    printf("%d ", idx[i]);
   }
   putchar('\n');
   return 0;
