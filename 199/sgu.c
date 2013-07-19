@@ -26,12 +26,11 @@ struct SB {
 } m[S];
 int n;
 
-int len[S] ;
-int next[S] ;
 int idx[S]; //!< used to index sort.
-int max_value = 1;
-int max_idx = 1;
-int i, j;
+
+int len[S] = { 0 };
+int next[S] = { 0 };
+int visited[S];
 
 /**
    @brief used to index sort.
@@ -49,8 +48,28 @@ int cmp (const void* a, const void* b) {
   return m[a1].s - m[b1].s;
 }
 
+void dfs(int a) {
+  if (!visited[a]) {
+    int i;
+    for (i=a-1; i>=1; --i) {
+      if (m[idx[i]].s<m[idx[a]].s && m[idx[i]].b<m[idx[a]].b) {
+        if (!visited[i]) {
+          dfs(i);
+        }
+        if (len[i]+1 > len[a]) {
+          len[a] = len[i]+1;
+          next[a] = i;
+        }
+      }
+    }
+    visited[a] = 1;
+  }
+}
+
+
 int main()
 {
+  int i, j;
   scanf("%d", &n);
   for (i=1; i<=n; ++i) {
     scanf("%d%d", &m[i].s, &m[i].b);
@@ -58,26 +77,17 @@ int main()
   }
   
   qsort(idx+1, n, sizeof(int), cmp);
-
+  
+  j = 1;
   for (i=n; i>=1; --i) {
-    len[i] = 1;
-    next[i] = -1;
-    for (j=i+1; j<=n; ++j) {
-      if (m[idx[i]].s<m[idx[j]].s && m[idx[i]].b<m[idx[j]].b) {
-        if (len[j]+1 > len[i]) {
-          len[i] = len[j] + 1;
-          next[i] = j;
-          if (max_value < len[i]) {
-            max_value = len[i];
-            max_idx = i;
-          }
-        }
-      }
+    dfs(i);
+    if (len[i] > len[j]) {
+      j = i;
     }
   }
   
-  printf("%d\n", max_value);
-  for (i=max_idx; i!=-1; i=next[i]) {
+  printf("%d\n", len[j]+1);
+  for (i=j; i>0; i=next[i]) {
     printf("%d ", idx[i]);
   }
   putchar('\n');
