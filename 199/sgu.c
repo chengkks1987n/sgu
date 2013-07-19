@@ -60,23 +60,20 @@ int main()
   qsort(idx+1, n, sizeof(int), cmp);
 
   for (i=n; i>=1; --i) {
+    len[i] = 1;
+    next[i] = -1;
     for (j=i+1; j<=n; ++j) {
       if (m[idx[i]].s<m[idx[j]].s && m[idx[i]].b<m[idx[j]].b) {
-        break;
+        if (len[j]+1 > len[i]) {
+          len[i] = len[j] + 1;
+          next[i] = j;
+          if (max_value < len[i]) {
+            max_value = len[i];
+            max_idx = i;
+          }
+        }
       }
     }
-    if (j > n) {
-      next[i] = -1;
-      len[i] = 1;
-    }
-    else {
-      next[i] = j;
-      len[i] = 1 + len[j];
-      if (max_value < len[i]) {
-        max_value = len[i];
-        max_idx = i;
-      }
-    }    
   }
   
   printf("%d\n", max_value);
