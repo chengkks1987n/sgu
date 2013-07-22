@@ -6,13 +6,15 @@
    @author ck <chengkechengke@gmail.com>
 
    @section Description 
-   1. sort all of the members -- use index sort.
-   2. for k = n to 1
-          find a member j (j>k) who do not hate k
-          if cannt find let len[k] = 1, next[k] = -1;
-          else let len[k] = len[j] + 1, next[k] = j;
-   3. the one that has the max len is the answer, go through next,
-      find the member.
+   - the complexity is n*log(n)
+   - if si<sb,bi<bj, we say the i-th member is smaller than j-th.
+   - sort all the members, find the longest subsequence in which the
+     adjacent two has the 'smaller' relationship.
+
+   1. sort all of the members -- use index sort, the s in acscend order
+      while b in descend order.
+   2. find the longest increasing subsequence(LIS) in sorted b.
+   
    */
 
 #include <stdio.h>
@@ -27,10 +29,11 @@ struct SB {
 int n;
 
 int idx[S]; //!< used to index sort.
+int v[S] = { 0 }; //!< v[i] means the min last value in all of the LIS
+                  //!  with length i 
+int pre[S] = { 0 }; 
+int len = 0; //!< the length of array v.
 
-int len[S] = { 0 };
-int next[S] = { 0 };
-int visited[S];
 
 /**
    @brief used to index sort.
@@ -43,33 +46,33 @@ int cmp (const void* a, const void* b) {
   int a1 = *(int*)a;
   int b1 = *(int*)b;
   if (m[a1].s == m[b1].s) {
-    return m[a1].b - m[b1].b;
+    return m[b1].b - m[a1].b;
   }
   return m[a1].s - m[b1].s;
 }
 
-void dfs(int a) {
-  if (!visited[a]) {
-    int i;
-    for (i=a-1; i>=1; --i) {
-      if (m[idx[i]].s<m[idx[a]].s && m[idx[i]].b<m[idx[a]].b) {
-        if (!visited[i]) {
-          dfs(i);
-        }
-        if (len[i]+1 > len[a]) {
-          len[a] = len[i]+1;
-          next[a] = i;
-        }
-      }
+void b_search(int low, int up, int k) {
+  int mid;
+  while (up-low > 1) {
+    mid = (up + low) >> 1;
+    if (m[k].b > m[v[mid]].b) {
+      low = mid;
     }
-    visited[a] = 1;
+    else if (m[k].b == m[v[mid]].b) {
+      up = low = mid;
+    }
+    else {
+      up = mid;
+    }
   }
-}
 
+  v[up] = k;
+  pre[k] = v[up-1];
+}
 
 int main()
 {
-  int i, j;
+  int i;
   scanf("%d", &n);
   for (i=1; i<=n; ++i) {
     scanf("%d%d", &m[i].s, &m[i].b);
@@ -78,18 +81,27 @@ int main()
   
   qsort(idx+1, n, sizeof(int), cmp);
   
-  j = 1;
-  for (i=n; i>=1; --i) {
-    dfs(i);
-    if (len[i] > len[j]) {
-      j = i;
+  v[1] = idx[1];
+  len = 1;
+  for (i=1; i<=n; ++i) {
+    if (m[v[len]].b < m[idx[i]].b) {
+      v[len+1] = idx[i];
+      pre[idx[i]] = v[len];
+      ++len;
+    }
+    else if (m[v[1]].b >= m[idx[i]].b) {
+      v[1] = idx[i];
+    }
+    else {
+      b_search(1, len, idx[i]);
     }
   }
   
-  printf("%d\n", len[j]+1);
-  for (i=j; i>0; i=next[i]) {
-    printf("%d ", idx[i]);
+  printf("%d\n", len);
+  for (i=v[len]; i>0; i=pre[i]) {
+    printf("%d ", i);
   }
   putchar('\n');
   return 0;
 }
+
