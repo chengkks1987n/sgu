@@ -19,14 +19,15 @@ int main() {
   
   for (i=1; i<=n; ++i) 
     for (j=1; j<=n; ++j) {
-      if (x!=i && x!=j && i!=j && a[x][i] && a[i][j] && !a[x][j]) {
-	b[++b[0]] = j;
+      if (!b[j] && x!=i && i!=j && x!=j && a[x][i] && a[i][j] && !a[x][j]) {
+	++b[0];
+	b[j] = 1;
       }
     }
 
   printf("%d\n", b[0]);
-  for (i=1; i<=b[0]; ++i) {
-    printf("%d ", b[i]);
+  for (i=1; i<=n; ++i) {
+    if (b[i]) printf("%d ", i);
   }
   putchar('\n');
   return 0;
